@@ -1,7 +1,7 @@
 package com.lightereb.hrms.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lightereb.hrms.entity.system.SysUser;
+import com.lightereb.hrms.model.entity.system.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

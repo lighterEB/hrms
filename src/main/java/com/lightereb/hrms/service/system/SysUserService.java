@@ -1,7 +1,7 @@
 package com.lightereb.hrms.service.system;
 
 import com.lightereb.hrms.dto.response.UserInfoResponse;
-import com.lightereb.hrms.entity.system.SysUser;
+import com.lightereb.hrms.model.entity.system.SysUser;
 
 public interface SysUserService {
     /**

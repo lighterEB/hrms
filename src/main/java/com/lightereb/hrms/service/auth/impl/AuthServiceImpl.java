@@ -3,7 +3,7 @@ package com.lightereb.hrms.service.auth.impl;
 import com.lightereb.hrms.common.exception.BusinessException;
 import com.lightereb.hrms.dto.response.LoginResponse;
 import com.lightereb.hrms.dto.response.UserInfoResponse;
-import com.lightereb.hrms.entity.system.SysUser;
+import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.security.util.JwtTokenUtil;
 import com.lightereb.hrms.service.auth.AuthService;
 import com.lightereb.hrms.service.system.SysUserService;

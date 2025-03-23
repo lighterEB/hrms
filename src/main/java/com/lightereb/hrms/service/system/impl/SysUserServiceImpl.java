@@ -2,7 +2,7 @@ package com.lightereb.hrms.service.system.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lightereb.hrms.dto.response.UserInfoResponse;
-import com.lightereb.hrms.entity.system.SysUser;
+import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.mapper.system.SysUserMapper;
 import com.lightereb.hrms.service.system.SysUserService;
 import lombok.RequiredArgsConstructor;

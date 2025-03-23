@@ -1,7 +1,7 @@
 package com.lightereb.hrms.security.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.lightereb.hrms.entity.system.SysUser;
+import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.mapper.system.SysUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
