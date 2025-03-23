@@ -1,10 +1,11 @@
 package com.lightereb.hrms.security.util;
 
+import com.lightereb.hrms.config.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -15,124 +16,86 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * JWT工具类，用于生成和验证JWT令牌
+ * JWT工具类
  */
 @Component
-public class JwtTokenUtil
-{
+@RequiredArgsConstructor
+public class JwtTokenUtil {
 
-	@Value("${jwt.secret}")
-	private String secret;
-
-	@Value("${jwt.expiration}")
-	private long expiration;
+	private final JwtProperties jwtProperties;
 
 	/**
 	 * 获取签名密钥
-	 *
-	 * @return 签名密钥
 	 */
 	private Key getSigningKey() {
-		byte[] keyBytes = secret.getBytes();
+		byte[] keyBytes = jwtProperties.getSecret().getBytes();
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
 	/**
-	 * 为指定用户生成JWT令牌
-	 *
-	 * @param userDetails 用户详情
-	 * @return JWT令牌
+	 * 生成JWT令牌
 	 */
 	public String generateToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
-		// 可以在这里添加额外的声明（如用户角色、权限等）
 		return createToken(claims, userDetails.getUsername());
 	}
 
 	/**
-	 * 创建JWT令牌
-	 *
-	 * @param claims  令牌声明
-	 * @param subject 令牌主题（通常是用户名）
-	 * @return JWT令牌
+	 * 创建令牌
 	 */
 	private String createToken(Map<String, Object> claims, String subject) {
-		Date now = new Date(System.currentTimeMillis());
-		Date expiryDate = new Date(now.getTime() + expiration);
+		Date now = new Date();
+		Date expiryDate = new Date(now.getTime() + jwtProperties.getExpiration());
 
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(now).setExpiration(expiryDate).signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+		return Jwts.builder()
+				.setClaims(claims)
+				.setSubject(subject)
+				.setIssuedAt(now)
+				.setExpiration(expiryDate)
+				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
+				.compact();
 	}
 
 	/**
-	 * 验证JWT令牌是否有效
-	 *
-	 * @param token       JWT令牌
-	 * @param userDetails 用户详情
-	 * @return 是否有效
+	 * 从令牌中获取用户名
 	 */
-	public Boolean validateToken(String token, UserDetails userDetails) {
-		final String username = extractUsername(token);
-		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+	public String getUsernameFromToken(String token) {
+		return getClaimFromToken(token, Claims::getSubject);
 	}
 
 	/**
-	 * 从JWT令牌中提取用户名
-	 *
-	 * @param token JWT令牌
-	 * @return 用户名
+	 * 判断令牌是否过期
 	 */
-	public String extractUsername(String token) {
-		return extractClaim(token, Claims::getSubject);
+	public boolean isTokenExpired(String token) {
+		Date expiration = getClaimFromToken(token, Claims::getExpiration);
+		return expiration.before(new Date());
 	}
 
 	/**
-	 * 从JWT令牌中提取过期时间
-	 *
-	 * @param token JWT令牌
-	 * @return 过期时间
+	 * 验证令牌
 	 */
-	public Date extractExpiration(String token) {
-		return extractClaim(token, Claims::getExpiration);
+	public boolean validateToken(String token, UserDetails userDetails) {
+		String username = getUsernameFromToken(token);
+		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
 	}
 
 	/**
-	 * 提取JWT令牌声明
-	 *
-	 * @param token          JWT令牌
-	 * @param claimsResolver 声明解析函数
-	 * @return 解析后的结果
+	 * 获取过期时间（毫秒）
 	 */
-	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-		final Claims claims = extractAllClaims(token);
+	public long getExpirationTimeInMillis() {
+		return jwtProperties.getExpiration();
+	}
+
+	private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+		Claims claims = getAllClaimsFromToken(token);
 		return claimsResolver.apply(claims);
 	}
 
-	/**
-	 * 提取所有声明
-	 *
-	 * @param token JWT令牌
-	 * @return 所有声明
-	 */
-	private Claims extractAllClaims(String token) {
-		return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
-	}
-
-	/**
-	 * 检查令牌是否过期
-	 *
-	 * @param token JWT令牌
-	 * @return 是否过期
-	 */
-	private Boolean isTokenExpired(String token) {
-		return extractExpiration(token).before(new Date());
-	}
-
-	/**
-	 * 获取令牌过期时间（毫秒）
-	 *
-	 * @return 过期时间
-	 */
-	public long getExpirationTimeInMillis() {
-		return expiration;
+	private Claims getAllClaimsFromToken(String token) {
+		return Jwts.parserBuilder()
+				.setSigningKey(getSigningKey())
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
 	}
 }

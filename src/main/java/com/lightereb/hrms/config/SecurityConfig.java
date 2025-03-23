@@ -44,7 +44,13 @@ public class SecurityConfig {
                         // 允许认证相关接口匿名访问
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
                         // 允许Swagger和Druid相关接口匿名访问
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/druid/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/druid/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/doc.html").permitAll()
                         // 其他所有请求需要认证
                         .anyRequest().authenticated()
                 )

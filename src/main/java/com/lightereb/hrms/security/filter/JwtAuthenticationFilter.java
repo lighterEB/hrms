@@ -1,11 +1,13 @@
 package com.lightereb.hrms.security.filter;
 
+import com.lightereb.hrms.config.properties.JwtProperties;
 import com.lightereb.hrms.security.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,61 +29,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
-
-    /**
-     * 从请求头中提取JWT令牌
-     * @param request 请求
-     * @return JWT令牌
-     */
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+    private final JwtProperties jwtProperties;
 
     /**
      * 过滤器执行逻辑
      */
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-        try {
-            // 从请求头获取JWT令牌
-            String jwt = getJwtFromRequest(request);
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain chain)
+            throws ServletException, IOException {
 
-            // 验证JWT令牌
-            if (StringUtils.hasText(jwt) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // 从JWT中提取用户名
-                String username = jwtTokenUtil.extractUsername(jwt);
+        String authHeader = request.getHeader(jwtProperties.getHeader());
 
-                if (StringUtils.hasText(username)) {
-                    // 加载用户详情
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (authHeader != null && authHeader.startsWith(jwtProperties.getTokenPrefix() + " ")) {
+            String token = authHeader.substring(jwtProperties.getTokenPrefix().length() + 1);
+            String username = jwtTokenUtil.getUsernameFromToken(token);
 
-                    // 验证令牌有效性
-                    if (jwtTokenUtil.validateToken(jwt, userDetails)) {
-                        // 创建认证令牌
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                        // 设置认证详情
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                        // 设置安全上下文
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                if (jwtTokenUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
         }
 
-        // 继续执行过滤器链
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 }

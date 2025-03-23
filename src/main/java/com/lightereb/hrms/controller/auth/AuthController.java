@@ -9,6 +9,9 @@ import com.lightereb.hrms.dto.response.UserInfoResponse;
 import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.service.auth.AuthService;
 import com.lightereb.hrms.service.system.SysUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "认证管理", description = "认证相关接口")
 public class AuthController {
 
 	private final AuthService authService;
@@ -32,6 +36,7 @@ public class AuthController {
 	/**
 	 * 用户登录
 	 */
+	@Operation(summary = "用户登录", description = "用户登录接口")
 	@PostMapping("/login")
 	public R<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
 		LoginResponse response = authService.login(request.getUsername(), request.getPassword());
@@ -41,6 +46,7 @@ public class AuthController {
 	/**
 	 * 用户注册
 	 */
+	@Operation(summary = "用户注册", description = "用户注册接口")
 	@PostMapping("/register")
 	public R<Void> register(@RequestBody @Valid RegisterRequest request) {
 		authService.register(request);
@@ -50,6 +56,7 @@ public class AuthController {
 	/**
 	 * 修改密码
 	 */
+	@Operation(summary = "修改密码", description = "修改当前登录用户的密码", security = {@SecurityRequirement(name = "Authorization")})
 	@PostMapping("/password")
 	public R<Void> updatePassword(@RequestBody @Valid UpdatePasswordRequest request) {
 		authService.updatePassword(request);
@@ -59,6 +66,7 @@ public class AuthController {
 	/**
 	 * 获取当前登录用户信息
 	 */
+	@Operation(summary = "获取用户信息", description = "获取当前登录用户的详细信息", security = {@SecurityRequirement(name = "Authorization")})
 	@GetMapping("/info")
 	public R<SysUser> getUserInfo() {
 		String username = authService.getCurrentUsername();
@@ -69,6 +77,7 @@ public class AuthController {
 	/**
 	 * 退出登录
 	 */
+	@Operation(summary = "退出登录", description = "用户退出登录", security = {@SecurityRequirement(name = "Authorization")})
 	@PostMapping("/logout")
 	public R<Void> logout() {
 		return R.ok(null, "退出成功");
