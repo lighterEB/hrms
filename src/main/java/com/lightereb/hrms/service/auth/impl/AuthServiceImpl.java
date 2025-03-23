@@ -1,11 +1,14 @@
 package com.lightereb.hrms.service.auth.impl;
 
 import com.lightereb.hrms.common.exception.BusinessException;
+import com.lightereb.hrms.dto.request.RegisterRequest;
+import com.lightereb.hrms.dto.request.UpdatePasswordRequest;
 import com.lightereb.hrms.dto.response.LoginResponse;
 import com.lightereb.hrms.dto.response.UserInfoResponse;
 import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.security.util.JwtTokenUtil;
 import com.lightereb.hrms.service.auth.AuthService;
+import com.lightereb.hrms.service.system.SysRoleService;
 import com.lightereb.hrms.service.system.SysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,66 +17,119 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final SysUserService userService;
+	private final AuthenticationManager authenticationManager;
+	private final JwtTokenUtil jwtTokenUtil;
+	private final SysUserService userService;
+	private final SysRoleService roleService;
+	private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public LoginResponse login(String username, String password) {
-        try {
-            // 使用Spring Security进行身份验证
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
+	@Override
+	public LoginResponse login(String username, String password) {
+		try {
+			// 认证
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(username, password)
+			);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // 设置认证信息到上下文
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+			// 生成令牌
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			String token = jwtTokenUtil.generateToken(userDetails);
 
-            // 生成JWT令牌
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            String token = jwtTokenUtil.generateToken(userDetails);
+			// 获取用户信息
+			SysUser user = userService.getByUsername(username);
+			if (user == null) {
+				throw new BusinessException("用户不存在");
+			}
 
-            // 获取用户信息
-            SysUser user = userService.getByUsername(username);
-            UserInfoResponse userInfo = userService.getUserInfoByUsername(username);
+			// 构建用户信息响应
+			UserInfoResponse userInfo = UserInfoResponse.builder()
+					.id(user.getId())
+					.username(user.getUsername())
+					.realName(user.getRealName())
+					.avatar(user.getAvatar())
+					.email(user.getEmail())
+					.phone(user.getPhone())
+					.roles(roleService.getRoleCodesByUserId(user.getId()))
+					.permissions(roleService.getPermissionCodesByUserId(user.getId()))
+					.build();
 
-            // 更新用户最后登录时间
-            userService.updateLastLoginTime(user.getId());
+			// 更新登录时间
+			userService.updateLastLoginTime(user.getId());
 
-            // 构造并返回登录响应
-            return new LoginResponse(
-                    token,
-                    jwtTokenUtil.getExpirationTimeInMillis() / 1000, // 转换为秒
-                    userInfo
-            );
+			// 返回登录响应
+			return LoginResponse.of(
+					token,
+					jwtTokenUtil.getExpirationTimeInMillis() / 1000,
+					userInfo
+			);
 
-        } catch (Exception e) {
-            log.error("登录出错：{}",e.getMessage(),e);
-            throw new BusinessException(e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			log.error("登录失败：{}", e.getMessage(), e);
+			throw new BusinessException("用户名或密码错误");
+		}
+	}
 
-    @Override
-    public String getCurrentUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return authentication.getName();
-        }
-        return null;
-    }
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void register(RegisterRequest request) {
+		// 检查用户名是否已存在
+		if (userService.getByUsername(request.getUsername()) != null) {
+			throw new BusinessException("用户名已存在");
+		}
 
-    public static void main(String[] args) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String rawPassword = "123456";
-        String hashedPassword = encoder.encode(rawPassword);
-        System.out.println("Hashed Password: " + hashedPassword);
-    }
+		// 创建用户
+		SysUser user = new SysUser()
+				.setUsername(request.getUsername())
+				.setPassword(passwordEncoder.encode(request.getPassword()))
+				.setRealName(request.getRealName())
+				.setPhone(request.getPhone())
+				.setEmail(request.getEmail())
+				.setStatus(1);  // 正常状态
+
+		userService.save(user);
+
+		// 分配默认角色
+		userService.assignDefaultRole(user.getId());
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void updatePassword(UpdatePasswordRequest request) {
+		// 获取当前用户
+		String username = getCurrentUsername();
+		SysUser user = userService.getByUsername(username);
+
+		// 验证原密码
+		if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+			throw new BusinessException("原密码不正确");
+		}
+
+		// 验证新密码与确认密码
+		if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+			throw new BusinessException("两次输入的密码不一致");
+		}
+
+		// 更新密码
+		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+		userService.updateById(user);
+	}
+
+	@Override
+	public String getCurrentUsername() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()) {
+			return authentication.getName();
+		}
+		return null;
+	}
 }

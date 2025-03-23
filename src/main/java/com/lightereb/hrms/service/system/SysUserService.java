@@ -27,4 +27,9 @@ public interface SysUserService extends BaseService<SysUser> {
      * 修改用户状态
      */
     void updateStatus(Long userId, Integer status);
+
+    /**
+     * 分配默认角色
+     */
+    void assignDefaultRole(Long userId);
 }
