@@ -1,33 +1,30 @@
 package com.lightereb.hrms.service.system;
 
-import com.lightereb.hrms.dto.response.UserInfoResponse;
 import com.lightereb.hrms.model.entity.system.SysUser;
+import com.lightereb.hrms.service.BaseService;
 
-public interface SysUserService {
+/**
+ * 系统用户Service接口
+ */
+public interface SysUserService extends BaseService<SysUser> {
+
     /**
      * 根据用户名查询用户
-     * @param username 用户名
-     * @return 用户实体
      */
     SysUser getByUsername(String username);
 
     /**
-     * 根据ID查询用户信息
-     * @param id 用户ID
-     * @return 用户信息DTO
-     */
-    UserInfoResponse getUserInfoById(Long id);
-
-    /**
-     * 根据用户名查询用户信息
-     * @param username 用户名
-     * @return 用户信息DTO
-     */
-    UserInfoResponse getUserInfoByUsername(String username);
-
-    /**
-     * 更新最后登录时间
-     * @param userId 用户ID
+     * 更新用户最后登录时间
      */
     void updateLastLoginTime(Long userId);
+
+    /**
+     * 重置用户密码
+     */
+    void resetPassword(Long userId, String newPassword);
+
+    /**
+     * 修改用户状态
+     */
+    void updateStatus(Long userId, Integer status);
 }

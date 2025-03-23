@@ -1,62 +1,65 @@
 package com.lightereb.hrms.service.system.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.lightereb.hrms.dto.response.UserInfoResponse;
-import com.lightereb.hrms.model.entity.system.SysUser;
+import com.lightereb.hrms.common.exception.BusinessException;
 import com.lightereb.hrms.mapper.system.SysUserMapper;
+import com.lightereb.hrms.model.entity.system.SysUser;
+import com.lightereb.hrms.service.impl.BaseServiceImpl;
 import com.lightereb.hrms.service.system.SysUserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * 系统用户Service实现类
+ */
+@Slf4j
 @Service
-@RequiredArgsConstructor
-public class SysUserServiceImpl implements SysUserService {
+public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
-    private final SysUserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public SysUserServiceImpl(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public SysUser getByUsername(String username) {
-        return userMapper.selectOne(
-                new LambdaQueryWrapper<SysUser>()
-                        .eq(SysUser::getUsername, username)
-                        .eq(SysUser::getIsDeleted, 0)
-        );
+        return baseMapper.selectByUsername(username);
     }
 
     @Override
-    public UserInfoResponse getUserInfoById(Long id) {
-        SysUser user = userMapper.selectById(id);
-        return convertToUserInfoResponse(user);
-    }
-
-    @Override
-    public UserInfoResponse getUserInfoByUsername(String username) {
-        SysUser user = getByUsername(username);
-        return convertToUserInfoResponse(user);
-    }
-
-    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateLastLoginTime(Long userId) {
-        SysUser user = new SysUser();
-        user.setId(userId);
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
         user.setLastLoginTime(LocalDateTime.now());
-        user.setUpdateTime(LocalDateTime.now());
-        userMapper.updateById(user);
+        updateById(user);
     }
 
-    /**
-     * 将SysUser实体转换为UserInfoResponse DTO
-     */
-    private UserInfoResponse convertToUserInfoResponse(SysUser user) {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resetPassword(Long userId, String newPassword) {
+        SysUser user = getById(userId);
         if (user == null) {
-            return null;
+            throw new BusinessException("用户不存在");
         }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        updateById(user);
+    }
 
-        UserInfoResponse userInfoResponse = new UserInfoResponse();
-        BeanUtils.copyProperties(user, userInfoResponse);
-        return userInfoResponse;
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStatus(Long userId, Integer status) {
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        user.setStatus(status);
+        updateById(user);
     }
 }
