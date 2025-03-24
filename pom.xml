@@ -6,170 +6,182 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.lightereb</groupId>
     <artifactId>hrms</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>hrms</name>
     <description>企业人事管理系统</description>
 
+    <modules>
+        <module>hrms-common</module>
+        <module>hrms-system</module>
+        <module>hrms-auth</module>
+        <module>hrms-api</module>
+    </modules>
+
     <properties>
         <java.version>17</java.version>
-        <mybatis-plus.version>3.5.5</mybatis-plus.version>
-        <druid.version>1.2.23</druid.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jwt.version>0.11.5</jwt.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <jbcrypt.version>0.4</jbcrypt.version>
+        <druid.version>1.2.23</druid.version>
         <hutool.version>5.8.24</hutool.version>
         <knife4j.version>4.3.0</knife4j.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <jbcrypt.version>0.4</jbcrypt.version>
         <guava.version>32.1.2-jre</guava.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <flyway.version>9.22.3</flyway.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
 
-    <dependencies>
-        <!-- Spring Boot 核心依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <!-- 项目模块依赖 -->
+            <dependency>
+                <groupId>com.lightereb</groupId>
+                <artifactId>hrms-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lightereb</groupId>
+                <artifactId>hrms-system</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lightereb</groupId>
+                <artifactId>hrms-auth</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <!-- 安全与认证 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>${jwt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>${jwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>${jwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>${jbcrypt.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mindrot</groupId>
+                <artifactId>jbcrypt</artifactId>
+                <version>${jbcrypt.version}</version>
+            </dependency>
 
-        <!-- 数据库相关 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-3-starter</artifactId>
-            <version>${druid.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>${flyway.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-mysql</artifactId>
-            <version>${flyway.version}</version>
-        </dependency>
+            <!-- 数据库相关 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jdbc</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-mysql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
 
-        <!-- 缓存 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
+            <!-- 缓存 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+            </dependency>
 
-        <!-- 文档工具 -->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
-        </dependency>
+            <!-- 文档工具 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
 
-        <!-- 工具库 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>${hutool.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency>
+            <!-- 工具库 -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
 
-        <!-- 测试依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+            <!-- 测试依赖 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-test</artifactId>
+                <scope>test</scope>
+            </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <optional>true</optional>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -177,6 +189,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <skip>true</skip>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
