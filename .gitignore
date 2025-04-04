@@ -33,3 +33,7 @@ build/
 .vscode/
 
 src/main/resources/application-dev.yml
+hrms-api/src/main/resources/application-dev.yml
+**/application-dev.yml
+.DS_Store
+**/.DS_Store

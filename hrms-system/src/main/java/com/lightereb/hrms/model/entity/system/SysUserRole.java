@@ -1,7 +1,7 @@
 package com.lightereb.hrms.model.entity.system;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lightereb.hrms.entity.BaseEntity;
+import com.lightereb.hrms.model.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -13,8 +13,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("sys_user_role")
-public class SysUserRole extends BaseEntity
-{
+public class SysUserRole extends BaseEntity {
 
 	/**
 	 * 用户ID

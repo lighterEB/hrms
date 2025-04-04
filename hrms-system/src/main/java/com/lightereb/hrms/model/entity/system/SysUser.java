@@ -1,7 +1,7 @@
 package com.lightereb.hrms.model.entity.system;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lightereb.hrms.entity.BaseEntity;
+import com.lightereb.hrms.model.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("sys_user")
-public class SysUser extends BaseEntity
-{
+public class SysUser extends BaseEntity {
 
     /**
      * 用户名
