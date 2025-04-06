@@ -5,11 +5,12 @@ package com.lightereb.hrms.common.exception;
  */
 public class BusinessException extends RuntimeException {
 
-    private Integer code;
+    private final Integer code;
     private final String message;
 
     public BusinessException(String message) {
         super(message);
+        this.code = 500;
         this.message = message;
     }
 

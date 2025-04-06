@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 允许认证相关接口匿名访问
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        // 允许测试接口匿名访问
+                        .requestMatchers("/test/**").permitAll()
                         // 允许Swagger和Druid相关接口匿名访问
                         .requestMatchers(
                                 "/swagger-ui/**",
