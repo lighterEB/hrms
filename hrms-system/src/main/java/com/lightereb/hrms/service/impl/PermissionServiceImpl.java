@@ -1,7 +1,7 @@
-package com.lightereb.hrms.service.system.impl;
+package com.lightereb.hrms.service.impl;
 
 import com.lightereb.hrms.common.service.PermissionService;
-import com.lightereb.hrms.service.system.SysPermissionService;
+import com.lightereb.hrms.service.SysPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.lightereb.hrms.service.system.impl;
+package com.lightereb.hrms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,8 +8,8 @@ import com.lightereb.hrms.mapper.system.SysUserRoleMapper;
 import com.lightereb.hrms.model.entity.system.SysRole;
 import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.model.entity.system.SysUserRole;
-import com.lightereb.hrms.service.system.SysRoleService;
-import com.lightereb.hrms.service.system.SysUserService;
+import com.lightereb.hrms.service.SysRoleService;
+import com.lightereb.hrms.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

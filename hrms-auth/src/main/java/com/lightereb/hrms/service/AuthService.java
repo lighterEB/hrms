@@ -1,4 +1,4 @@
-package com.lightereb.hrms.service.auth;
+package com.lightereb.hrms.service;
 
 import com.lightereb.hrms.dto.request.RegisterRequest;
 import com.lightereb.hrms.dto.request.UpdatePasswordRequest;

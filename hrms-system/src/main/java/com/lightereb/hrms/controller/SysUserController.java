@@ -7,7 +7,7 @@ import com.lightereb.hrms.dto.request.AssignUserRolesRequest;
 import com.lightereb.hrms.dto.request.ResetPasswordRequest;
 import com.lightereb.hrms.dto.request.UserQueryRequest;
 import com.lightereb.hrms.model.entity.system.SysUser;
-import com.lightereb.hrms.service.system.SysUserService;
+import com.lightereb.hrms.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

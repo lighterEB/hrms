@@ -6,7 +6,7 @@ import com.lightereb.hrms.common.result.R;
 import com.lightereb.hrms.common.utils.SecurityUtils;
 import com.lightereb.hrms.model.entity.system.SysPermission;
 import com.lightereb.hrms.model.vo.system.MenuVO;
-import com.lightereb.hrms.service.system.SysPermissionService;
+import com.lightereb.hrms.service.SysPermissionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

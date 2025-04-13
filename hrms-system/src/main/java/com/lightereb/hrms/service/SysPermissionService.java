@@ -1,4 +1,4 @@
-package com.lightereb.hrms.service.system;
+package com.lightereb.hrms.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lightereb.hrms.model.entity.system.SysPermission;

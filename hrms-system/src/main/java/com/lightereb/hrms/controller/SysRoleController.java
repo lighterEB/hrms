@@ -6,7 +6,7 @@ import com.lightereb.hrms.common.result.R;
 import com.lightereb.hrms.dto.request.AssignRolePermissionsRequest;
 import com.lightereb.hrms.dto.request.RoleQueryRequest;
 import com.lightereb.hrms.model.entity.system.SysRole;
-import com.lightereb.hrms.service.system.SysRoleService;
+import com.lightereb.hrms.service.SysRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

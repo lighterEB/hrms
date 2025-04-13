@@ -1,4 +1,4 @@
-package com.lightereb.hrms.service.auth.impl;
+package com.lightereb.hrms.service.impl;
 
 import com.lightereb.hrms.common.exception.BusinessException;
 import com.lightereb.hrms.dto.request.RegisterRequest;
@@ -7,9 +7,9 @@ import com.lightereb.hrms.dto.response.LoginResponse;
 import com.lightereb.hrms.dto.response.UserInfoResponse;
 import com.lightereb.hrms.model.entity.system.SysUser;
 import com.lightereb.hrms.security.util.JwtTokenUtil;
-import com.lightereb.hrms.service.auth.AuthService;
-import com.lightereb.hrms.service.system.SysRoleService;
-import com.lightereb.hrms.service.system.SysUserService;
+import com.lightereb.hrms.service.AuthService;
+import com.lightereb.hrms.service.SysRoleService;
+import com.lightereb.hrms.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

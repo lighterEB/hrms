@@ -1,4 +1,4 @@
-package com.lightereb.hrms.service.system;
+package com.lightereb.hrms.service;
 
 import com.lightereb.hrms.common.service.BaseService;
 import com.lightereb.hrms.model.entity.system.SysUser;

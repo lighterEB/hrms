@@ -1,4 +1,4 @@
-package com.lightereb.hrms.service.system.impl;
+package com.lightereb.hrms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -7,8 +7,8 @@ import com.lightereb.hrms.mapper.system.SysRolePermissionMapper;
 import com.lightereb.hrms.model.entity.system.SysPermission;
 import com.lightereb.hrms.model.entity.system.SysRolePermission;
 import com.lightereb.hrms.model.vo.system.MenuVO;
-import com.lightereb.hrms.service.system.SysPermissionService;
-import com.lightereb.hrms.service.system.SysRoleService;
+import com.lightereb.hrms.service.SysPermissionService;
+import com.lightereb.hrms.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
