@@ -72,3 +72,5 @@ jwt:
 knife4j:
   enable: true
   production: false
+  setting:
+    enable-document-manage: true  # 开启文档管理功能
