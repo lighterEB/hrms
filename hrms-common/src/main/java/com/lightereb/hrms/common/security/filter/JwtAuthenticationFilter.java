@@ -1,7 +1,7 @@
-package com.lightereb.hrms.security.filter;
+package com.lightereb.hrms.common.security.filter;
 
-import com.lightereb.hrms.config.properties.JwtProperties;
-import com.lightereb.hrms.security.util.JwtTokenUtil;
+import com.lightereb.hrms.common.config.properties.JwtProperties;
+import com.lightereb.hrms.common.security.util.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

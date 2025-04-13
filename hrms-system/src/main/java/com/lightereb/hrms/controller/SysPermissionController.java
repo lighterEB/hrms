@@ -3,7 +3,7 @@ package com.lightereb.hrms.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lightereb.hrms.common.result.R;
-import com.lightereb.hrms.common.utils.SecurityUtils;
+import com.lightereb.hrms.common.security.util.SecurityUtils;
 import com.lightereb.hrms.model.entity.system.SysPermission;
 import com.lightereb.hrms.model.vo.system.MenuVO;
 import com.lightereb.hrms.service.SysPermissionService;

@@ -6,7 +6,7 @@ import com.lightereb.hrms.dto.request.UpdatePasswordRequest;
 import com.lightereb.hrms.dto.response.LoginResponse;
 import com.lightereb.hrms.dto.response.UserInfoResponse;
 import com.lightereb.hrms.model.entity.system.SysUser;
-import com.lightereb.hrms.security.util.JwtTokenUtil;
+import com.lightereb.hrms.common.security.util.JwtTokenUtil;
 import com.lightereb.hrms.service.AuthService;
 import com.lightereb.hrms.service.SysRoleService;
 import com.lightereb.hrms.service.SysUserService;
@@ -42,15 +42,15 @@ public class AuthServiceImpl implements AuthService {
 			);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			// 生成令牌
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			String token = jwtTokenUtil.generateToken(userDetails);
-
 			// 获取用户信息
 			SysUser user = userService.getByUsername(username);
 			if (user == null) {
 				throw new BusinessException("用户不存在");
 			}
+
+			// 生成令牌
+			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+			String token = jwtTokenUtil.generateToken(userDetails, user.getId());
 
 			// 构建用户信息响应
 			UserInfoResponse userInfo = UserInfoResponse.builder()

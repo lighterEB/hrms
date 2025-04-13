@@ -1,9 +1,9 @@
-package com.lightereb.hrms.common.interceptor;
+package com.lightereb.hrms.common.security.interceptor;
 
 import com.lightereb.hrms.common.annotation.RequirePermission;
 import com.lightereb.hrms.common.exception.BusinessException;
 import com.lightereb.hrms.common.service.PermissionService;
-import com.lightereb.hrms.common.utils.SecurityUtils;
+import com.lightereb.hrms.common.security.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,11 @@ public class PermissionInterceptor implements HandlerInterceptor
 
 	@Override
 	public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
-		if (!(handler instanceof HandlerMethod)) {
+		if (!(handler instanceof HandlerMethod handlerMethod)) {
 			return true;
 		}
 
-		HandlerMethod handlerMethod = (HandlerMethod) handler;
-		RequirePermission requirePermission = handlerMethod.getMethodAnnotation(RequirePermission.class);
+        RequirePermission requirePermission = handlerMethod.getMethodAnnotation(RequirePermission.class);
 		if (requirePermission == null) {
 			return true;
 		}

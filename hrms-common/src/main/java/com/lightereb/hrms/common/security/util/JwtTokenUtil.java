@@ -1,6 +1,6 @@
-package com.lightereb.hrms.security.util;
+package com.lightereb.hrms.common.security.util;
 
-import com.lightereb.hrms.config.properties.JwtProperties;
+import com.lightereb.hrms.common.config.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -35,9 +35,19 @@ public class JwtTokenUtil {
 	/**
 	 * 生成JWT令牌
 	 */
-	public String generateToken(UserDetails userDetails) {
+	public String generateToken(UserDetails userDetails, Long userId) {
 		Map<String, Object> claims = new HashMap<>();
+		// 将用户ID存入claims
+		claims.put("userId", userId);
 		return createToken(claims, userDetails.getUsername());
+	}
+
+	/**
+	 * 从token中获取用户ID
+	 */
+	public Long getUserIdFromToken(String token) {
+		Claims claims = getAllClaimsFromToken(token);
+		return claims.get("userId", Long.class);
 	}
 
 	/**
