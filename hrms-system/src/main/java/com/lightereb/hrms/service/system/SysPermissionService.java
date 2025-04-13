@@ -25,4 +25,11 @@ public interface SysPermissionService extends IService<SysPermission> {
      * @return 权限集合
      */
     Set<String> getUserPermissions(Long userId);
+    
+    /**
+     * 构建权限树
+     * @param permissions 权限列表
+     * @return 权限树
+     */
+    List<SysPermission> buildPermissionTree(List<SysPermission> permissions);
 } 

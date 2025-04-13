@@ -1,10 +1,13 @@
 package com.lightereb.hrms.model.entity.system;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lightereb.hrms.model.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 权限菜单表
@@ -59,4 +62,10 @@ public class SysPermission extends BaseEntity {
 	 * 状态 0-禁用 1-正常
 	 */
 	private Integer status;
+	
+	/**
+	 * 子权限列表
+	 */
+	@TableField(exist = false)
+	private List<SysPermission> children;
 }

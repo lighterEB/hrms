@@ -3,6 +3,8 @@ package com.lightereb.hrms.service.system;
 import com.lightereb.hrms.common.service.BaseService;
 import com.lightereb.hrms.model.entity.system.SysUser;
 
+import java.util.List;
+
 /**
  * 用户Service接口
  */
@@ -34,4 +36,18 @@ public interface SysUserService extends BaseService<SysUser> {
      * 分配默认角色
      */
     void assignDefaultRole(Long userId);
+    
+    /**
+     * 分配用户角色
+     * @param userId 用户ID
+     * @param roleIds 角色ID列表
+     */
+    void assignUserRoles(Long userId, List<Long> roleIds);
+    
+    /**
+     * 获取用户角色ID列表
+     * @param userId 用户ID
+     * @return 角色ID列表
+     */
+    List<Long> getUserRoleIds(Long userId);
 }

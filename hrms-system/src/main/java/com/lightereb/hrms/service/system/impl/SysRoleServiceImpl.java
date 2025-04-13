@@ -1,12 +1,5 @@
 package com.lightereb.hrms.service.system.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lightereb.hrms.common.service.impl.BaseServiceImpl;
 import com.lightereb.hrms.mapper.system.SysPermissionMapper;
@@ -15,8 +8,13 @@ import com.lightereb.hrms.mapper.system.SysRolePermissionMapper;
 import com.lightereb.hrms.model.entity.system.SysRole;
 import com.lightereb.hrms.model.entity.system.SysRolePermission;
 import com.lightereb.hrms.service.system.SysRoleService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色Service实现类

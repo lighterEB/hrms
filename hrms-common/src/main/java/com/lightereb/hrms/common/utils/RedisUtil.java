@@ -1,11 +1,10 @@
 package com.lightereb.hrms.common.utils;
 
-import java.util.concurrent.TimeUnit;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor

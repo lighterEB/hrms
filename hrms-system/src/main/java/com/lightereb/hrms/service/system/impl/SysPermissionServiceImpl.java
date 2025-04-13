@@ -1,15 +1,5 @@
 package com.lightereb.hrms.service.system.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lightereb.hrms.mapper.system.SysPermissionMapper;
@@ -19,8 +9,11 @@ import com.lightereb.hrms.model.entity.system.SysRolePermission;
 import com.lightereb.hrms.model.vo.system.MenuVO;
 import com.lightereb.hrms.service.system.SysPermissionService;
 import com.lightereb.hrms.service.system.SysRoleService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 权限Service实现类
@@ -132,5 +125,46 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 					return menuVO;
 				})
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 构建权限树
+	 * @param permissions 权限列表
+	 * @return 权限树
+	 */
+	@Override
+	public List<SysPermission> buildPermissionTree(List<SysPermission> permissions) {
+		if (permissions == null || permissions.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		// 将权限列表转换为Map，便于查找
+		Map<Long, SysPermission> permissionMap = permissions.stream()
+				.collect(Collectors.toMap(SysPermission::getId, permission -> permission));
+		
+		List<SysPermission> rootPermissions = new ArrayList<>();
+		
+		// 遍历权限列表
+		for (SysPermission permission : permissions) {
+			// 如果是根权限（parentId为0），则直接添加到结果列表
+			if (permission.getParentId() == 0L) {
+				rootPermissions.add(permission);
+			} else {
+				// 否则添加到父级权限的子权限列表中
+				SysPermission parent = permissionMap.get(permission.getParentId());
+				if (parent != null) {
+					if (parent.getChildren() == null) {
+						parent.setChildren(new ArrayList<>());
+					}
+					parent.getChildren().add(permission);
+				}
+			}
+		}
+		
+		// 按类型和排序字段排序
+		rootPermissions.sort(Comparator.comparing(SysPermission::getType)
+				.thenComparing(SysPermission::getSort));
+		
+		return rootPermissions;
 	}
 }

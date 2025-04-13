@@ -128,6 +128,27 @@ public class R<T> implements Serializable {
         r.setSuccess(false);
         return r;
     }
+    
+    /**
+     * 错误响应 - 通用错误 (400) - error的别名
+     */
+    public static <T> R<T> fail() {
+        return error("操作失败");
+    }
+
+    /**
+     * 错误响应 - 带消息的通用错误 (400) - error的别名
+     */
+    public static <T> R<T> fail(String message) {
+        return error(message);
+    }
+
+    /**
+     * 错误响应 - 自定义状态码和消息 - error的别名
+     */
+    public static <T> R<T> fail(int code, String message) {
+        return error(code, message);
+    }
 
     /**
      * 未授权 (401)

@@ -1,13 +1,12 @@
 package com.lightereb.hrms.mapper.system;
 
-import java.util.List;
-
+import com.lightereb.hrms.common.mapper.BaseMapper;
+import com.lightereb.hrms.model.entity.system.SysPermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.lightereb.hrms.common.mapper.BaseMapper;
-import com.lightereb.hrms.model.entity.system.SysPermission;
+import java.util.List;
 
 /**
  * 权限Mapper接口

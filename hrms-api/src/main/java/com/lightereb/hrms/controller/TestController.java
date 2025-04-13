@@ -1,15 +1,14 @@
 package com.lightereb.hrms.controller;
 
+import com.lightereb.hrms.common.result.R;
+import com.lightereb.hrms.mapper.system.SysUserMapper;
+import com.lightereb.hrms.model.entity.system.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.lightereb.hrms.common.result.R;
-import com.lightereb.hrms.mapper.system.SysUserMapper;
-import com.lightereb.hrms.model.entity.system.SysUser;
 
 @RestController
 @RequestMapping("/test")
